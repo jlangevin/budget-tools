@@ -1,7 +1,28 @@
 import React, { Component } from 'react';
 import SelectOptions from '../../SelectOptions';
-import { Button, Col, Container, Form, FormFeedback, FormGroup, Input, Label, Tooltip } from 'reactstrap';
-import { calculateMonthlyPayment, getValidDecimal } from '../../utils/loans.js';
+
+import { 
+  Button, 
+  Col, 
+  Container, 
+  Form, 
+  FormFeedback, 
+  FormGroup, 
+  Input, 
+  Label, 
+  Modal, 
+  ModalBody, 
+  ModalFooter, 
+  ModalHeader, 
+  Tooltip
+} from 'reactstrap';
+
+import {
+  calculateMonthlyPayment,
+  getValidDecimal
+} from '../../utils/loans.js';
+
+import LoanAmortization from './LoanAmortization';
 
 class MonthlyLoanPayment extends Component {
 
@@ -15,7 +36,7 @@ class MonthlyLoanPayment extends Component {
     principal        : 450000,
     principalTipOpen : false,
     principalError   : null,
-    payment          : '',
+    payment          : null,
     amortizationOpen : false
   };
 
@@ -51,7 +72,7 @@ class MonthlyLoanPayment extends Component {
       rateError      : ( typeof rate      !== 'number' ) ? { invalid: true } : null,
       principalError : ( typeof principal !== 'number' ) ? { invalid: true } : null,
       payment        : ( typeof rate      !== 'number' || typeof duration  !== 'number' ) ?
-                       '' :
+                       null :
                        calculateMonthlyPayment(rate, duration, principal)
     };
  
@@ -85,12 +106,12 @@ class MonthlyLoanPayment extends Component {
       principal,
       principalError,
       payment,
-      amortizationModalOpen
+      amortizationOpen
     } = this.state;
 
     return (
       <Container>
-        <h4>Loan Payment Calculator</h4>
+        <h4>Loan Payment Calculator6</h4>
 
         <Form>
           <FormGroup row>
@@ -200,11 +221,20 @@ class MonthlyLoanPayment extends Component {
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               <b>
                 {
-                  rateError === null &&
-                  principalError === null &&
-                  `$${payment}*`
+                  payment !== null ? 
+                  `$${payment}*` :
+                  null
                 }
               </b>
+
+              {
+                payment !== null ?
+                <Button
+                  color="success"
+                  onClick={ () => this.toggleOpen('amortizationOpen') }
+                >Amort</Button> :
+                null
+              }
             </Col>
           </FormGroup>
 
@@ -215,6 +245,36 @@ class MonthlyLoanPayment extends Component {
             </Col>
           </FormGroup>
         </Form>
+
+        {
+          amortizationOpen &&
+          payment !== null ?
+          <Modal
+            isOpen = {amortizationOpen}
+            toggle = { () => this.toggleOpen('amortizationOpen') }
+            size   = 'lg'
+          >
+            <ModalHeader
+              toggle = { () => this.toggleOpen('amortizationOpen') }
+            >
+              Amortization Schedule
+            </ModalHeader>
+
+            <ModalBody>
+              <LoanAmortization
+                rate      = { rate }
+                duration  = { duration }
+                principal = { principal }
+                payment   = { payment }
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button color="secondary" onClick={ () => this.toggleOpen('amortizationOpen') }>Cancel</Button>
+            </ModalFooter>
+          </Modal>
+           :
+          null
+        }
       </Container>
     );
   }

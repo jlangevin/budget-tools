@@ -58,7 +58,7 @@ const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanB
   ];
 
   if (amortArray.length < months) {
-    return this.caclMonthlyAmortization(monthlyPayment, months, pctMonthlyInterest, newLoanBalance, newAmortArray);
+    return calculateAmortization(monthlyPayment, months, pctMonthlyInterest, newLoanBalance, newAmortArray);
   } else {
     return amortArray;
   }

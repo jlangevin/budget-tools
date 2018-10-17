@@ -35,25 +35,21 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
   console.log(amortization);
   
   return (
-    <div>
-      <h4>Amortization Schedule</h4>
-
-      <Table>
-        <thead>
-          <tr>
-            <th>Payment #</th>
-            <th>Payment</th>
-            <th>Principal</th>
-            <th>Interest</th>
-            <th>Balance</th>
-          </tr>
-        </thead>
-        
-        <tbody>
-          <AmortizationList data={ amortization } />
-        </tbody>
-      </Table>
-    </div>
+    <Table>
+      <thead>
+        <tr>
+          <th>Payment #</th>
+          <th>Payment</th>
+          <th>Principal</th>
+          <th>Interest</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <AmortizationList data={ amortization } />
+      </tbody>
+    </Table>
   );
 }
 
