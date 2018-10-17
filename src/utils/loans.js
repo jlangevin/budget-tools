@@ -5,7 +5,7 @@ const formatMoney = (number) => {
 const getValidDecimal = (value, wholePlaces = 2, decimalPlaces = 2) => {
   let regex = new RegExp("((?:\\d{0," + wholePlaces + "})(?:\\.\\d{0," + decimalPlaces + "}|\\d{0}))");
   let match = value.match(regex);
-  return match.length ? match[0] : '';
+  return match.length ? match[0] : null;
 };
 
 const roundNum = (num) => {

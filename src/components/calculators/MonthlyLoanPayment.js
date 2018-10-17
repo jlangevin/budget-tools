@@ -2,18 +2,14 @@ import React, { Component } from 'react';
 import SelectOptions from '../../SelectOptions';
 
 import { 
-  Button, 
-  Col, 
-  Container, 
-  Form, 
-  FormFeedback, 
-  FormGroup, 
-  Input, 
-  Label, 
-  Modal, 
-  ModalBody, 
-  ModalFooter, 
-  ModalHeader, 
+  Button,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  FormGroup,
+  Input,
+  Label,
   Tooltip
 } from 'reactstrap';
 
@@ -29,13 +25,16 @@ class MonthlyLoanPayment extends Component {
   state = {
     rate             : 5,
     rateTipOpen      : false,
-    rateError        : null,
+    rateError        : false,
+
     duration         : 30,
     durationTipOpen  : false,
-    durationError    : null,
-    principal        : 450000,
+    durationError    : false,
+
+    principal        : 100000,
     principalTipOpen : false,
-    principalError   : null,
+    principalError   : false,
+
     payment          : null,
     amortizationOpen : false
   };
@@ -44,44 +43,64 @@ class MonthlyLoanPayment extends Component {
     this.calculatePayment();
   }
 
-  handleAPRChange = (event) => {
-    let { name, value } = event.currentTarget;
-    let validVal = getValidDecimal(value, 2, 2);
-    if (value.length === 0 || validVal.length > 0) {
-      this.setState({ [name]: validVal });
-    }
-  };
-
-  handlePrincipalChange = (event) => {
-    let { name, value } = event.currentTarget;
-    let validVal = getValidDecimal(value, 10, 2);
-    if (value.length === 0 || validVal.length > 0) {
-      this.setState({ [name]: validVal });
-    }
-  };
+  getFieldSettings = (fieldName) => {
+    const settings = {
+      rate: {
+        wholeNums  : 2,
+        decimalNums: 2
+      },
+      duration: {
+        wholeNums  : 2,
+        decimalNums: 0
+      },
+      principal: {
+        wholeNums  : 10,
+        decimalNums: 0
+      },
+    };
+    return settings[fieldName];
+  }
 
   handleFieldChange = (event) => {
     let { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
+    let { wholeNums, decimalNums } = this.getFieldSettings(name);
+    let validValue = getValidDecimal(value, wholeNums, decimalNums);
+
+    if (value.length === 0 ) {
+      this.setState({
+        [name]           : value,
+        payment          : null,
+        [`${name}Error`] : true
+      });
+    } else if ( validValue.length > 0 ) {
+      this.setState({
+        [name]           : validValue,
+        payment          : null,
+        [`${name}Error`] : false
+      });
+    }
   };
+
+  fieldIsValid = (fieldValue) => {
+    return ( fieldValue.length === 0 || fieldValue === '.' ) ? false : true;
+  }
 
   calculatePayment = () => {
     let { rate, duration, principal } = this.state;
+    let newPayment = ( this.fieldIsValid(rate) && this.fieldIsValid(duration) && this.fieldIsValid(principal) ) ?
+                     calculateMonthlyPayment(rate, duration, principal) :
+                     null;
 
-    let stateUpdates = {
-      rateError      : ( typeof rate      !== 'number' ) ? { invalid: true } : null,
-      principalError : ( typeof principal !== 'number' ) ? { invalid: true } : null,
-      payment        : ( typeof rate      !== 'number' || typeof duration  !== 'number' ) ?
-                       null :
-                       calculateMonthlyPayment(rate, duration, principal)
-    };
- 
-    this.setState(stateUpdates);
+    this.setState({ payment: newPayment });
   }
 
   toggleOpen = (key) => {
     let isOpen = this.state[key];
     this.setState({ [key]: !isOpen });
+  }
+
+  allowAmortization = () => {
+    return this.state.payment !== null ? true : false;
   }
 
   durationOptions = [
@@ -111,7 +130,7 @@ class MonthlyLoanPayment extends Component {
 
     return (
       <Container>
-        <h4>Loan Payment Calculator6</h4>
+        <h4>Loan Payment Calculator</h4>
 
         <Form>
           <FormGroup row>
@@ -133,14 +152,10 @@ class MonthlyLoanPayment extends Component {
                 name     = 'rate'
                 id       = 'rate'
                 value    = { rate }
-                onChange = { this.handleAPRChange }
-                { ...rateError }
+                onChange = { this.handleFieldChange }
+                invalid  = { rateError }
               />
-              
-              {
-                rateError !== null &&
-                <FormFeedback>Rate is required</FormFeedback>
-              }  
+              <FormFeedback>Rate is required</FormFeedback>
             </Col>
           </FormGroup>
         
@@ -191,19 +206,17 @@ class MonthlyLoanPayment extends Component {
                 name     = 'principal'
                 id       = 'principal'
                 value    = { principal }
-                onChange = { this.handlePrincipalChange }
-                { ...principalError }
+                onChange = { this.handleFieldChange }
+                invalid  = { principalError }
               />
-            </Col>
-
-            {
-              principalError !== null &&
               <FormFeedback>Principal is required</FormFeedback>
-            }
+            </Col>            
           </FormGroup>
         
           <FormGroup row>
-            <Col xs={ 12 } md={ 8 } lg={ 6 }>
+            <Col
+              xs={ 12 } sm={ 12 } md={ 8 } lg={ 6 }
+              className="text-center">
               <Button
                 color   = "success"
                 onClick = { this.calculatePayment }
@@ -222,19 +235,18 @@ class MonthlyLoanPayment extends Component {
               <b>
                 {
                   payment !== null ? 
-                  `$${payment}*` :
+                  `$${payment}* ` :
                   null
                 }
               </b>
 
               {
-                payment !== null ?
+                this.allowAmortization() ?
                 <Button
                   block={ false }
-                  tag="Link"
                   onClick={ () => this.toggleOpen('amortizationOpen') }
                 >
-                  View Amortization Schedule
+                  View Amortization
                 </Button> :
                 null
               }
@@ -250,8 +262,10 @@ class MonthlyLoanPayment extends Component {
         </Form>
 
         {
-          amortizationOpen &&
-          payment !== null ?
+          (
+            amortizationOpen &&
+            this.allowAmortization()
+          ) ?
           <LoanAmortization
             rate         = { rate }
             duration     = { duration }
