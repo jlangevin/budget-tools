@@ -230,9 +230,12 @@ class MonthlyLoanPayment extends Component {
               {
                 payment !== null ?
                 <Button
-                  color="success"
+                  block={ false }
+                  tag="Link"
                   onClick={ () => this.toggleOpen('amortizationOpen') }
-                >Amort</Button> :
+                >
+                  View Amortization Schedule
+                </Button> :
                 null
               }
             </Col>
@@ -249,30 +252,14 @@ class MonthlyLoanPayment extends Component {
         {
           amortizationOpen &&
           payment !== null ?
-          <Modal
-            isOpen = {amortizationOpen}
-            toggle = { () => this.toggleOpen('amortizationOpen') }
-            size   = 'lg'
-          >
-            <ModalHeader
-              toggle = { () => this.toggleOpen('amortizationOpen') }
-            >
-              Amortization Schedule
-            </ModalHeader>
-
-            <ModalBody>
-              <LoanAmortization
-                rate      = { rate }
-                duration  = { duration }
-                principal = { principal }
-                payment   = { payment }
-              />
-            </ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={ () => this.toggleOpen('amortizationOpen') }>Cancel</Button>
-            </ModalFooter>
-          </Modal>
-           :
+          <LoanAmortization
+            rate         = { rate }
+            duration     = { duration }
+            principal    = { principal }
+            payment      = { payment }
+            closeHandler = { () => this.toggleOpen('amortizationOpen') }
+            isOpen       = { amortizationOpen }
+          /> :
           null
         }
       </Container>

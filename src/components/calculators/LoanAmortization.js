@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'reactstrap';
+import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 import { formatMoney, calculateAmortization } from '../../utils/loans';
 
 const AmortizationItem = ({ index, monthlyPayment, principalPmt, interestPmt, loanBalance }) => {
@@ -27,7 +27,7 @@ const AmortizationList = ({ data }) => {
   ));
 }
 
-const LoanAmortization = ({ rate, duration, principal, payment }) => {
+const LoanAmortization = ({ rate, duration, principal, payment, closeHandler, isOpen }) => {
 
   let rateMonthly = rate / 12 / 100;
   let loanTermMonths = duration * 12; 
@@ -35,21 +35,46 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
   console.log(amortization);
   
   return (
-    <Table>
-      <thead>
-        <tr>
-          <th>Payment #</th>
-          <th>Payment</th>
-          <th>Principal</th>
-          <th>Interest</th>
-          <th>Balance</th>
-        </tr>
-      </thead>
-      
-      <tbody>
-        <AmortizationList data={ amortization } />
-      </tbody>
-    </Table>
+    <Modal
+      isOpen = { isOpen }
+      toggle = { closeHandler }
+      size   = 'lg'
+    >
+      <ModalHeader
+        toggle = { closeHandler }
+      >
+        Amortization Schedule
+      </ModalHeader>
+
+      <ModalBody>
+        <Table>
+          <thead>
+            <tr>
+              <th>Payment #</th>
+              <th>Payment</th>
+              <th>Principal</th>
+              <th>Interest</th>
+              <th>Balance</th>
+            </tr>
+          </thead>
+          
+          <tbody>
+            <AmortizationList
+              data = { amortization }
+            />
+          </tbody>
+        </Table>
+      </ModalBody>
+
+      <ModalFooter>
+        <Button
+          color   = "secondary"
+          onClick = { closeHandler }
+        >
+          Close
+        </Button>
+      </ModalFooter>
+    </Modal>
   );
 }
 
