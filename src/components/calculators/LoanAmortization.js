@@ -32,7 +32,6 @@ const LoanAmortization = ({ rate, duration, principal, payment, closeHandler, is
   let rateMonthly = rate / 12 / 100;
   let loanTermMonths = duration * 12; 
   let amortization = calculateAmortization(payment, loanTermMonths, rateMonthly, principal);
-  console.log(amortization);
   
   return (
     <Modal
