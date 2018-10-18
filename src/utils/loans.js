@@ -16,28 +16,32 @@ const calculateInterest = (rate, principal) => {
   return roundNum(principal * rate);
 }
 
+/**
+ * Recursive function that returns an object's keys as an array of arrays.  Can be 
+ * used with lodash's Array methods such as _.get() and _.has().  Created to help 
+ * find missing and/or extraneous keys in localization objects. 
+ * @function
+ * @name calculateMonthlyPayment
+ * @param {number} rate - Yearly rate (APR)
+ * @param {number} duration - Length of loan term in years
+ * @param {number} principal - Amount borrowed
+ * @returns {number}
+ * @description Calculates monthly loan payment 
+ * 
+ * Equation:
+ * 
+ * P = (Pv*R) / [1 - (1 + R)^(-n)]
+ * 
+ * P = Monthly payment;
+ * Pv = Present value (starting value of the loan);
+ * APR = Annual Percentage Rate; 
+ * R = Periodic interest rate = APR/number of interest periods per year; 
+ * n = Total number of interest periods (interest periods per year * number of years)
+ */
 const calculateMonthlyPayment = (rate, duration, principal) => {
-  // P = (Pv*R) / [1 - (1 + R)^(-n)]
-  //     P = Monthly Payment
-  //     Pv = Present Value (starting value of the loan)
-  //     APR = Annual Percentage Rate
-  //     R = Periodic Interest Rate = APR/number of interest periods per year
-  //     n = Total number of interest periods (interest periods per year * number of years)
-
-  // Convert the APR to a monthly rate by dividing by 100 and then by 12 months.
   let monthlyRate = +rate / 100 / 12;
-
-  // Multiply the mortgage term in years by 12 to get total monthly payments.
-  let months = +duration * 12;
-
-  // Raise ( 1 plus the monthly rate ) to the negative power of the number of monthly 
-  // payments. Subtract that result from 1.
-  let raise = 1 - Math.pow(monthlyRate + 1, -months);
-
-  // Divide the monthly rate by the result and multiply by the amount borrowed.
-  let payment = monthlyRate / raise * principal;
-
-  // Round payment
+  let months      = +duration * 12;
+  let payment     = (principal * monthlyRate) / (1 - Math.pow(monthlyRate + 1, -months));
   return Math.round(payment * 100) / 100;
 }
 
