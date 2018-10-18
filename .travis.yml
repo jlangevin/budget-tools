@@ -1,8 +1,11 @@
 language: node_js
 node_js:
-  - 8
-# Note: travis defaults used for install
-# If custom install desired, include `npm install`
+- 8
 script:
-  - npm run build
-  - npm test -- --coverage && codecov
+- npm run build
+- npm test -- --coverage && codecov
+deploy:
+  provider: heroku
+  on: master
+  api_key:
+    secure: aeKt0wUfUauDkNE1zo89qtmx8srhtQOsBYF6FjzBV91fhaQf573wkilyG+ne7cHYH21OLPzi/a4O9YyQgiUIpFiwyKX2I33St9YEYLpGCmn4dGSD73enGUqxTdzKzuVPbHS7OPLS2KqGOcdfN5gPWqQ4XsTXd+84oOca+cjai6QM7xZTEoMfcSXPwGrcXpp7Poe23At105sIdSvsgJpr+6dGzQXm04xkBphQdZAycHJP+Ib+dxaBWRhsGzVNx1FUlM+VqQudVv9y2y2XYFvLOMjMPwHPs2hqqm6S7u8aMibapfBsvic1uZrDZnNx92m341axOnhaJTfgh07OURbRoDYKo/qL6HuM1e9sll1JzjK0g53zARs+gxTnlAWKa825ApXFTAR1iu0i5lgJPW9ZXIB+laRNQug3cwvkTwwHyGipiyJra5rBl1powxvwOPArViWj4tJdHUtKzDnYNwompR0vTYiu1Wc/K8PQTE2PNZLIexcpcau4eioBRyReggVQ9SEl508SwrNBs2f/Py7Kh5R9QR0JM5MIVK6xrxD3JR5yLzsMqmOyRXnvsKCoUJPAAoduOuV7tdBVbabgX2SDSVuSW/3xckXYTqYWOlxy6X+9cnwmDyTyYZeCbYKpxWugXi0GETvYdysfWOi8bXgP7agNoYLs4z+5IPrWd3nno8E=
