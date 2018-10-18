@@ -5,6 +5,7 @@ const DebtRepaymentCalculator = (props) => {
     <div>
       <h4>Debt Repayment Calculator</h4>
       
+      <p>Coming soon...</p>
     </div>
   );
 }

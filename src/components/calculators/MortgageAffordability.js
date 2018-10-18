@@ -7,6 +7,7 @@ const MortgageAffordability = (props) => {
         Mortgage Affordability Calculator
       </h4>
       
+      <p>Coming soon...</p>
     </div>
   );
 }

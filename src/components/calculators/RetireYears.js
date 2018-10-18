@@ -17,6 +17,8 @@ class YearsToRetirement extends Component {
           <li>5% return on investment after inflation while saving</li>
           <li>4% withdrawal rate</li>
         </ul>
+
+        <p>Coming soon...</p>
       </div>
     );
   }
