@@ -24,7 +24,7 @@ const roundDown = (num, decimalPlaces) => {
 }
 
 const calculateInterest = (rate, principal) => {
-  return roundNum(principal * rate, 3);
+  return roundNum(principal * rate, 2);
 }
 
 const numberMonthsInYears = (years) => {
@@ -65,26 +65,34 @@ const calculateMonthlyPayment = (rate, duration, principal) => {
   return Math.round(payment * 100) / 100;
 }
 
-const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanBalance, totalInterest = 0, amortArray = []) => {
-  let interestPmt     = calculateInterest(pctMonthlyInterest, loanBalance);
-  let principalPmt    = roundNum(monthlyPayment - interestPmt, 2);
-  let newLoanBalance  = roundNum(loanBalance - principalPmt, 2);
-  let newTotalInterest = interestPmt + totalInterest;
+const calculateMonthlyAmortization = (monthlyPayment, monthlyInterestRate, totalInterest, loanBalance) => {
 
+  let interestPayment  = calculateInterest(monthlyInterestRate, loanBalance);
+  let principalPayment = roundNum(monthlyPayment - interestPayment, 2);
+  let newLoanBalance   = roundNum(loanBalance - principalPayment, 2);
+  let newTotalInterest = roundNum(interestPayment + totalInterest, 2);
   let amortData = {
     monthlyPayment,
-    principalPmt,
-    interestPmt,
+    principalPayment,
+    interestPayment,
     totalInterest: newTotalInterest,
     loanBalance: newLoanBalance
   };
+  return amortData;
+}
+
+
+const calculateAmortization = (monthlyPayment, months, monthlyInterestRate, loanBalance, totalInterest = 0, amortArray = []) => {
+
+  let amortData = calculateMonthlyAmortization(monthlyPayment, monthlyInterestRate, totalInterest, loanBalance);
+  
   let newAmortArray = [
     ...amortArray,
     amortData
   ];
 
   if (amortArray.length < months) {
-    return calculateAmortization(monthlyPayment, months, pctMonthlyInterest, newLoanBalance, newTotalInterest, newAmortArray);
+    return calculateAmortization(monthlyPayment, months, monthlyInterestRate, amortData.loanBalance, amortData.totalInterest, newAmortArray);
   } else {
     return amortArray;
   }
@@ -92,6 +100,7 @@ const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanB
 
 export {
   calculateAmortization,
+  calculateMonthlyAmortization,
   calculateInterest,
   calculateMonthlyPayment,
   formatMoney,

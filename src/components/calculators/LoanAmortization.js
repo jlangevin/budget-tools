@@ -2,13 +2,13 @@ import React from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
 import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
 
-const AmortizationItem = ({ index, monthlyPayment, principalPmt, interestPmt, totalInterest, loanBalance }) => {
+const AmortizationItem = ({ index, monthlyPayment, principalPayment, interestPayment, totalInterest, loanBalance }) => {
   return (
     <tr>
       <th scope="row">{ index+1 }</th>
       <td>{ formatMoney(monthlyPayment) }</td>
-      <td>{ formatMoney(principalPmt) }</td>
-      <td>{ formatMoney(interestPmt) }</td>
+      <td>{ formatMoney(principalPayment) }</td>
+      <td>{ formatMoney(interestPayment) }</td>
       <td>{ formatMoney(totalInterest) }</td>
       <td>{ formatMoney(loanBalance) }</td>
     </tr>
@@ -19,12 +19,12 @@ const AmortizationList = ({ data }) => {
   return data.map((monthData, index) => (
       <AmortizationItem
         key={ `mo${index+1}`}
-        index          = { index }
-        monthlyPayment = { monthData.monthlyPayment }
-        principalPmt   = { monthData.principalPmt }
-        interestPmt    = { monthData.interestPmt }
-        totalInterest  = { monthData.totalInterest }
-        loanBalance    = { monthData.loanBalance }
+        index            = { index }
+        monthlyPayment   = { monthData.monthlyPayment }
+        principalPayment = { monthData.principalPayment }
+        interestPayment  = { monthData.interestPayment }
+        totalInterest    = { monthData.totalInterest }
+        loanBalance      = { monthData.loanBalance }
       />
   ));
 }
