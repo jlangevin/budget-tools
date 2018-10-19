@@ -133,30 +133,31 @@ class MonthlyLoanPayment extends Component {
         <h4>Loan Payment Calculator</h4>
 
         <Form>
+
           <FormGroup row>
-            <Label for='rate' id='rateLabel' xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
-              Annual Interest Rate:
+            <Label for='rate' id='principalLabel' xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
+              Loan Amount:
             </Label>
-            
+
             <Tooltip
-              isOpen    = { rateTipOpen }
-              target    = 'rateLabel'
-              toggle    = { () => this.toggleOpen('rateTipOpen') }
+              isOpen    = { principalTipOpen }
+              target    = 'principalLabel'
+              toggle    = { () => this.toggleOpen('principalTipOpen') }
             >
-              Annual interest rate (APR), not APY. Should be a percentage up to 99.99. Do not include %
+              How much was the total amount borrowed? Do not include $ or commas
             </Tooltip>
-            
+
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               <Input
                 type     = 'text'
-                name     = 'rate'
-                id       = 'rate'
-                value    = { rate }
+                name     = 'principal'
+                id       = 'principal'
+                value    = { principal }
                 onChange = { this.handleFieldChange }
-                invalid  = { rateError }
+                invalid  = { principalError }
               />
-              <FormFeedback>Rate is required</FormFeedback>
-            </Col>
+              <FormFeedback>Principal is required</FormFeedback>
+            </Col>            
           </FormGroup>
         
           <FormGroup row>
@@ -188,31 +189,31 @@ class MonthlyLoanPayment extends Component {
           </FormGroup>
 
           <FormGroup row>
-            <Label for='rate' id='principalLabel' xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
-              Loan Amount:
+            <Label for='rate' id='rateLabel' xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
+              Annual Interest Rate:
             </Label>
-
+            
             <Tooltip
-              isOpen    = { principalTipOpen }
-              target    = 'principalLabel'
-              toggle    = { () => this.toggleOpen('principalTipOpen') }
+              isOpen    = { rateTipOpen }
+              target    = 'rateLabel'
+              toggle    = { () => this.toggleOpen('rateTipOpen') }
             >
-              How much was the total amount borrowed? Do not include $ or commas
+              Annual interest rate (APR), not APY. Should be a percentage up to 99.99. Do not include %
             </Tooltip>
-
+            
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               <Input
                 type     = 'text'
-                name     = 'principal'
-                id       = 'principal'
-                value    = { principal }
+                name     = 'rate'
+                id       = 'rate'
+                value    = { rate }
                 onChange = { this.handleFieldChange }
-                invalid  = { principalError }
+                invalid  = { rateError }
               />
-              <FormFeedback>Principal is required</FormFeedback>
-            </Col>            
+              <FormFeedback>Rate is required</FormFeedback>
+            </Col>
           </FormGroup>
-        
+
           <FormGroup row>
             <Col
               xs={ 12 } sm={ 12 } md={ 8 } lg={ 6 }
