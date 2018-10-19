@@ -8,13 +8,32 @@ const getValidDecimal = (value, wholePlaces = 2, decimalPlaces = 2) => {
   return match.length ? match[0] : null;
 };
 
-const roundNum = (num) => {
-  return Math.round(num * 100) / 100;
+const roundNum = (num, decimalPlaces) => {
+  const multiplier = 10**decimalPlaces;
+  return Math.round(num * multiplier) / multiplier;
+}
+
+const roundUp = (num, decimalPlaces) => {
+  const multiplier = 10**(decimalPlaces);
+  return Math.ceil(num * multiplier) / multiplier;
+}
+
+const roundDown = (num, decimalPlaces) => {
+  const multiplier = 10**decimalPlaces;
+  return Math.floor(num * multiplier) / multiplier;
 }
 
 const calculateInterest = (rate, principal) => {
-  return roundNum(principal * rate);
+  return roundNum(principal * rate, 2);
 }
+
+const numberMonthsInYears = (years) => {
+  return years * 12;
+}
+
+const getMonthlyRateFromAPR = (ratePerYear) => {
+  return ratePerYear / 100 / 12;
+};
 
 /**
  * Recursive function that returns an object's keys as an array of arrays.  Can be 
@@ -30,7 +49,7 @@ const calculateInterest = (rate, principal) => {
  * 
  * Equation:
  * 
- * P = (Pv*R) / [1 - (1 + R)^(-n)]
+ * P = Pv * ( ( ( R * (1 + R)^n ) / ( (1 + R)^n - 1 ) ) )
  * 
  * P = Monthly payment;
  * Pv = Present value (starting value of the loan);
@@ -39,40 +58,57 @@ const calculateInterest = (rate, principal) => {
  * n = Total number of interest periods (interest periods per year * number of years)
  */
 const calculateMonthlyPayment = (rate, duration, principal) => {
-  let monthlyRate = +rate / 100 / 12;
-  let months      = +duration * 12;
-  let payment     = (principal * monthlyRate) / (1 - Math.pow(monthlyRate + 1, -months));
+  let monthlyRate     = getMonthlyRateFromAPR(rate);
+  let numberOfPeriods = numberMonthsInYears(duration);
+  let factor          = roundNum( (1 + monthlyRate)**numberOfPeriods, 4 );
+  let payment         = principal * ( ( (monthlyRate * factor) / (factor - 1) ) );
   return Math.round(payment * 100) / 100;
 }
 
-const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanBalance, amortArray = []) => {
-  let interestPmt    = calculateInterest(pctMonthlyInterest, loanBalance);
-  let principalPmt   = roundNum(monthlyPayment - interestPmt);
-  let newLoanBalance = roundNum(loanBalance - principalPmt);
+const calculateMonthlyAmortization = (monthlyPayment, monthlyInterestRate, totalInterest, loanBalance) => {
 
+  let interestPayment  = calculateInterest(monthlyInterestRate, loanBalance);
+  let principalPayment = roundNum(monthlyPayment - interestPayment, 2);
+  let newLoanBalance   = roundNum(loanBalance - principalPayment, 2);
+  let newTotalInterest = roundNum(interestPayment + totalInterest, 2);
   let amortData = {
     monthlyPayment,
-    principalPmt,
-    interestPmt,
+    principalPayment,
+    interestPayment,
+    totalInterest: newTotalInterest,
     loanBalance: newLoanBalance
   };
+  return amortData;
+}
+
+
+const calculateAmortization = (monthlyPayment, months, monthlyInterestRate, loanBalance, totalInterest = 0, amortArray = []) => {
+
+  let amortData = calculateMonthlyAmortization(monthlyPayment, monthlyInterestRate, totalInterest, loanBalance);
+  
   let newAmortArray = [
     ...amortArray,
     amortData
   ];
 
   if (amortArray.length < months) {
-    return calculateAmortization(monthlyPayment, months, pctMonthlyInterest, newLoanBalance, newAmortArray);
+    return calculateAmortization(monthlyPayment, months, monthlyInterestRate, amortData.loanBalance, amortData.totalInterest, newAmortArray);
   } else {
     return amortArray;
   }
 }
 
 export {
-  formatMoney,
-  getValidDecimal,
-  calculateMonthlyPayment,
   calculateAmortization,
+  calculateMonthlyAmortization,
   calculateInterest,
-  roundNum
+  calculateMonthlyPayment,
+  formatMoney,
+  getMonthlyRateFromAPR,
+  getValidDecimal,
+  numberMonthsInYears,
+  roundDown,
+  roundNum,
+  roundUp
 };
+

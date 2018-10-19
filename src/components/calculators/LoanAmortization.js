@@ -1,14 +1,15 @@
 import React from 'react';
 import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
-import { formatMoney, calculateAmortization } from '../../utils/loans';
+import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
 
-const AmortizationItem = ({ index, monthlyPayment, principalPmt, interestPmt, loanBalance }) => {
+const AmortizationItem = ({ index, monthlyPayment, principalPayment, interestPayment, totalInterest, loanBalance }) => {
   return (
     <tr>
       <th scope="row">{ index+1 }</th>
       <td>{ formatMoney(monthlyPayment) }</td>
-      <td>{ formatMoney(principalPmt) }</td>
-      <td>{ formatMoney(interestPmt) }</td>
+      <td>{ formatMoney(principalPayment) }</td>
+      <td>{ formatMoney(interestPayment) }</td>
+      <td>{ formatMoney(totalInterest) }</td>
       <td>{ formatMoney(loanBalance) }</td>
     </tr>
   );
@@ -18,19 +19,20 @@ const AmortizationList = ({ data }) => {
   return data.map((monthData, index) => (
       <AmortizationItem
         key={ `mo${index+1}`}
-        index          = { index }
-        monthlyPayment = { monthData.monthlyPayment }
-        principalPmt   = { monthData.principalPmt }
-        interestPmt    = { monthData.interestPmt }
-        loanBalance    = { monthData.loanBalance }
+        index            = { index }
+        monthlyPayment   = { monthData.monthlyPayment }
+        principalPayment = { monthData.principalPayment }
+        interestPayment  = { monthData.interestPayment }
+        totalInterest    = { monthData.totalInterest }
+        loanBalance      = { monthData.loanBalance }
       />
   ));
 }
 
 const LoanAmortization = ({ rate, duration, principal, payment, closeHandler, isOpen }) => {
 
-  let rateMonthly = rate / 12 / 100;
-  let loanTermMonths = duration * 12; 
+  let rateMonthly = getMonthlyRateFromAPR(rate);
+  let loanTermMonths = numberMonthsInYears(duration); 
   let amortization = calculateAmortization(payment, loanTermMonths, rateMonthly, principal);
   
   return (
@@ -53,6 +55,7 @@ const LoanAmortization = ({ rate, duration, principal, payment, closeHandler, is
               <th>Payment</th>
               <th>Principal</th>
               <th>Interest</th>
+              <th>Total Interest</th>
               <th>Balance</th>
             </tr>
           </thead>
