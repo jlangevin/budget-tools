@@ -13,8 +13,18 @@ const roundNum = (num, decimalPlaces) => {
   return Math.round(num * multiplier) / multiplier;
 }
 
+const roundUp = (num, decimalPlaces) => {
+  const multiplier = 10**(decimalPlaces);
+  return Math.ceil(num * multiplier) / multiplier;
+}
+
+const roundDown = (num, decimalPlaces) => {
+  const multiplier = 10**decimalPlaces;
+  return Math.floor(num * multiplier) / multiplier;
+}
+
 const calculateInterest = (rate, principal) => {
-  return roundNum(principal * rate, 2);
+  return roundNum(principal * rate, 3);
 }
 
 const numberMonthsInYears = (years) => {
@@ -39,7 +49,7 @@ const getMonthlyRateFromAPR = (ratePerYear) => {
  * 
  * Equation:
  * 
- * P = (Pv*R) / [1 - (1 + R)^(-n)]
+ * P = Pv * ( ( ( R * (1 + R)^n ) / ( (1 + R)^n - 1 ) ) )
  * 
  * P = Monthly payment;
  * Pv = Present value (starting value of the loan);
@@ -55,15 +65,17 @@ const calculateMonthlyPayment = (rate, duration, principal) => {
   return Math.round(payment * 100) / 100;
 }
 
-const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanBalance, amortArray = []) => {
-  let interestPmt    = calculateInterest(pctMonthlyInterest, loanBalance);
-  let principalPmt   = roundNum(monthlyPayment - interestPmt);
-  let newLoanBalance = roundNum(loanBalance - principalPmt);
+const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanBalance, totalInterest = 0, amortArray = []) => {
+  let interestPmt     = calculateInterest(pctMonthlyInterest, loanBalance);
+  let principalPmt    = roundNum(monthlyPayment - interestPmt, 2);
+  let newLoanBalance  = roundNum(loanBalance - principalPmt, 2);
+  let newTotalInterest = interestPmt + totalInterest;
 
   let amortData = {
     monthlyPayment,
     principalPmt,
     interestPmt,
+    totalInterest: newTotalInterest,
     loanBalance: newLoanBalance
   };
   let newAmortArray = [
@@ -72,7 +84,7 @@ const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanB
   ];
 
   if (amortArray.length < months) {
-    return calculateAmortization(monthlyPayment, months, pctMonthlyInterest, newLoanBalance, newAmortArray);
+    return calculateAmortization(monthlyPayment, months, pctMonthlyInterest, newLoanBalance, newTotalInterest, newAmortArray);
   } else {
     return amortArray;
   }
@@ -86,6 +98,8 @@ export {
   getMonthlyRateFromAPR,
   getValidDecimal,
   numberMonthsInYears,
-  roundNum
+  roundDown,
+  roundNum,
+  roundUp
 };
 
