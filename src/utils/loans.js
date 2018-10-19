@@ -8,13 +8,22 @@ const getValidDecimal = (value, wholePlaces = 2, decimalPlaces = 2) => {
   return match.length ? match[0] : null;
 };
 
-const roundNum = (num) => {
-  return Math.round(num * 100) / 100;
+const roundNum = (num, decimalPlaces) => {
+  const multiplier = 10**decimalPlaces;
+  return Math.round(num * multiplier) / multiplier;
 }
 
 const calculateInterest = (rate, principal) => {
-  return roundNum(principal * rate);
+  return roundNum(principal * rate, 2);
 }
+
+const numberMonthsInYears = (years) => {
+  return years * 12;
+}
+
+const getMonthlyRateFromAPR = (ratePerYear) => {
+  return ratePerYear / 100 / 12;
+};
 
 /**
  * Recursive function that returns an object's keys as an array of arrays.  Can be 
@@ -39,9 +48,10 @@ const calculateInterest = (rate, principal) => {
  * n = Total number of interest periods (interest periods per year * number of years)
  */
 const calculateMonthlyPayment = (rate, duration, principal) => {
-  let monthlyRate = +rate / 100 / 12;
-  let months      = +duration * 12;
-  let payment     = (principal * monthlyRate) / (1 - Math.pow(monthlyRate + 1, -months));
+  let monthlyRate     = getMonthlyRateFromAPR(rate);
+  let numberOfPeriods = numberMonthsInYears(duration);
+  let factor          = roundNum( (1 + monthlyRate)**numberOfPeriods, 4 );
+  let payment         = principal * ( ( (monthlyRate * factor) / (factor - 1) ) );
   return Math.round(payment * 100) / 100;
 }
 
@@ -69,10 +79,13 @@ const calculateAmortization = (monthlyPayment, months, pctMonthlyInterest, loanB
 }
 
 export {
-  formatMoney,
-  getValidDecimal,
-  calculateMonthlyPayment,
   calculateAmortization,
   calculateInterest,
+  calculateMonthlyPayment,
+  formatMoney,
+  getMonthlyRateFromAPR,
+  getValidDecimal,
+  numberMonthsInYears,
   roundNum
 };
+
