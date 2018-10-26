@@ -23,6 +23,18 @@ describe('rounding functions', () => {
     expect(roundHalfUpSymmetric(5.0)).toEqual(5);
   });
 
+  it('roundHalfUpAsymmetric() should return a rounded number of', () => {
+    expect(roundHalfUpAsymmetric(5.4)).toEqual(5);
+    expect(roundHalfUpSymmetric(5.5)).toEqual(6);
+    expect(roundHalfUpSymmetric(5.6)).toEqual(6);
+    expect(roundHalfUpSymmetric(-5.4)).toEqual(-5);
+    expect(roundHalfUpSymmetric(-5.5)).toEqual(-6);
+    expect(roundHalfUpSymmetric(-5.6)).toEqual(-6);
+    expect(roundHalfUpSymmetric(-0.5)).toEqual(-1);
+    expect(roundHalfUpSymmetric(0.5)).toEqual(1);
+    expect(roundHalfUpSymmetric(5.0)).toEqual(5);
+  });
+
   it('roundHalfDownSymmetric() should round the half down/toward from zero for both negative and positive', () => {
     expect(roundHalfDownSymmetric(5.4)).toEqual(5);
     expect(roundHalfDownSymmetric(5.5)).toEqual(5);
@@ -34,7 +46,7 @@ describe('rounding functions', () => {
     expect(roundHalfDownSymmetric(5.0)).toEqual(5);
   });
 
-  it('roundHalfDownAsymmetric() should return a rounded number of', () => {
+  it('roundHalfDownAsymmetric() should round the half down to next lowest number including negative nums.', () => {
     expect(roundHalfDownAsymmetric(5.4)).toEqual(5);
     expect(roundHalfDownAsymmetric(5.5)).toEqual(5);
     expect(roundHalfDownAsymmetric(5.6)).toEqual(6);
