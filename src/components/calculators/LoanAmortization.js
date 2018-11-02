@@ -40,7 +40,7 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
   const amortization = calculateAmortization(payment, loanTermPeriods, periodicRate, principal);
   const endData = amortization[amortization.length-1];
   const today = new Date();
-  const payoffDate = new Date(today.getFullYear()+duration, today.getMonth(), today.getDate());
+  const payoffDate = new Date(today.getFullYear()+parseInt(duration,10), today.getMonth(), today.getDate());
   
   return (
     <div>
