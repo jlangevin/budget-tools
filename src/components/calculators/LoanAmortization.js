@@ -45,11 +45,11 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
   return (
     <div>
 
-      <div className={classes.LoanInfoBox}>
+      <div className={classes.LoanInfoBox} id="LoanInfoBox">
         <Row>
           <Col className="text-center">
             <h6>Payment</h6>
-            <h3>{formatMoney(payment)}*</h3>
+            <h3><a href="#FeesFootnote" className={classes.TextAnchor}>{formatMoney(payment)}*</a></h3>
           </Col>
         </Row>
 
@@ -118,6 +118,13 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
           />
         </tbody>
       </Table>
+
+      <p>
+        <a href="#LoanInfoBox" id="FeesFootnote" className={classes.TextAnchor}>
+          <b>*</b> Monthly payment does not include taxes, insurance, 
+          HOA dues, or other fees commonly associated with loans. 
+        </a>
+      </p>
     </div>
   );
 }
