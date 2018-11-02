@@ -1,12 +1,16 @@
 import React from 'react';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
+import { Table } from 'reactstrap';
 import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
 
-const AmortizationItem = ({ index, monthlyPayment, principalPayment, interestPayment, totalInterest, loanBalance }) => {
+import LoanChart from './LoanChart';
+import * as classes from './LoanAmortization.module.css';
+
+
+const AmortizationItem = ({ index, payment, principalPayment, interestPayment, totalInterest, loanBalance }) => {
   return (
     <tr>
-      <th scope="row">{ index+1 }</th>
-      <td>{ formatMoney(monthlyPayment) }</td>
+      <td>{ index+1 }</td>
+      <td>{ formatMoney(payment) }</td>
       <td>{ formatMoney(principalPayment) }</td>
       <td>{ formatMoney(interestPayment) }</td>
       <td>{ formatMoney(totalInterest) }</td>
@@ -16,67 +20,53 @@ const AmortizationItem = ({ index, monthlyPayment, principalPayment, interestPay
 }
 
 const AmortizationList = ({ data }) => {
-  return data.map((monthData, index) => (
+  return data.map((periodicData, index) => (
       <AmortizationItem
-        key={ `mo${index+1}`}
+        key              = { `period${index+1}`}
         index            = { index }
-        monthlyPayment   = { monthData.monthlyPayment }
-        principalPayment = { monthData.principalPayment }
-        interestPayment  = { monthData.interestPayment }
-        totalInterest    = { monthData.totalInterest }
-        loanBalance      = { monthData.loanBalance }
+        payment          = { periodicData.payment }
+        principalPayment = { periodicData.principalPayment }
+        interestPayment  = { periodicData.interestPayment }
+        totalInterest    = { periodicData.totalInterest }
+        loanBalance      = { periodicData.loanBalance }
       />
   ));
 }
-
-const LoanAmortization = ({ rate, duration, principal, payment, closeHandler, isOpen }) => {
+    
+const LoanAmortization = ({ rate, duration, principal, payment }) => {
 
   let rateMonthly = getMonthlyRateFromAPR(rate);
   let loanTermMonths = numberMonthsInYears(duration); 
   let amortization = calculateAmortization(payment, loanTermMonths, rateMonthly, principal);
   
   return (
-    <Modal
-      isOpen = { isOpen }
-      toggle = { closeHandler }
-      size   = 'lg'
-    >
-      <ModalHeader
-        toggle = { closeHandler }
-      >
-        Amortization Schedule
-      </ModalHeader>
+    <div>
 
-      <ModalBody>
-        <Table>
-          <thead>
-            <tr>
-              <th>Payment #</th>
-              <th>Payment</th>
-              <th>Principal</th>
-              <th>Interest</th>
-              <th>Total Interest</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          
-          <tbody>
-            <AmortizationList
-              data = { amortization }
-            />
-          </tbody>
-        </Table>
-      </ModalBody>
+      <div className={classes.ChartWrapper}>
+        <LoanChart
+          data={amortization}
+        />
+      </div>
 
-      <ModalFooter>
-        <Button
-          color   = "secondary"
-          onClick = { closeHandler }
-        >
-          Close
-        </Button>
-      </ModalFooter>
-    </Modal>
+      <Table className="table-striped table-sm {classes.reduce-table-padding}" size="sm">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Payment</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Total Interest</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <AmortizationList
+            data={amortization}
+          />
+        </tbody>
+      </Table>
+    </div>
   );
 }
 

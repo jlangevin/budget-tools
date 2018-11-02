@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Container } from 'reactstrap';
 
 import Header from './components/Header';
 import Home from './components/Home';
 import MonthlyLoanPayment from './components/calculators/MonthlyLoanPayment';
 import DebtRepayment from './components/calculators/DebtRepayment';
 import MortgageAffordability from './components/calculators/MortgageAffordability';
-import './App.css';
+import * as classes from './App.module.css';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        
+      <div>
         <Header />
 
-        <Container>
+        <div className={classes.AppBody}>
           <Route
             path      = "/MonthlyLoanPayment"
             component = { MonthlyLoanPayment } />
@@ -33,7 +31,7 @@ class App extends Component {
             path      = "/"
             component = { Home }
             exact />
-        </Container>
+        </div>
       </div>
     );
   }
