@@ -33,9 +33,9 @@ const roundHalfEven = (value, decimals) => {
   if (value % 0.5 !== 0) {
     value = Math.round(value);
   } else {
-   value = Math.floor(value) % 2 === 0 ? 
-           Math.floor(value) : 
-           Math.round(value);
+    value = Math.floor(value) % 2 === 0 ? 
+            Math.floor(value) : 
+            Math.round(value);
   }
   return value / multiplier;
 };

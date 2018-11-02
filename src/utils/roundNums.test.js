@@ -58,16 +58,16 @@ describe('rounding functions', () => {
   });
 
   it('roundHalfEven() should round the half to the nearest even number', () => {
-    expect(roundHalfEven(4.4)).toEqual(4);
-    expect(roundHalfEven(4.5)).toEqual(4);
-    expect(roundHalfEven(5.4)).toEqual(5);
-    expect(roundHalfEven(5.5)).toEqual(6);
-    expect(roundHalfEven(5.6)).toEqual(6);
-    expect(roundHalfEven(-5.4)).toEqual(-5);
-    expect(roundHalfEven(-5.5)).toEqual(-6);
-    expect(roundHalfEven(-5.6)).toEqual(-6);
-    expect(roundHalfEven(0.5)).toEqual(0);
-    expect(roundHalfEven(5.0)).toEqual(5);
+    expect(roundHalfEven(4.4, 0)).toEqual(4);
+    expect(roundHalfEven(4.5, 0)).toEqual(4);
+    expect(roundHalfEven(5.4, 0)).toEqual(5);
+    expect(roundHalfEven(5.5, 0)).toEqual(6);
+    expect(roundHalfEven(5.6, 0)).toEqual(6);
+    expect(roundHalfEven(-5.4, 0)).toEqual(-5);
+    expect(roundHalfEven(-5.5, 0)).toEqual(-6);
+    expect(roundHalfEven(-5.6, 0)).toEqual(-6);
+    expect(roundHalfEven(0.5, 0)).toEqual(0);
+    expect(roundHalfEven(5.0, 0)).toEqual(5);
   });
 
   it('roundHalfOdd() should round the half to the nearest odd number', () => {
@@ -88,14 +88,14 @@ describe('rounding functions', () => {
   });
 
   it('roundCeiling() should round up to the next largest whole number', () => {
-    expect(roundCeiling(5.4)).toEqual(6);
-    expect(roundCeiling(5.5)).toEqual(6);
-    expect(roundCeiling(5.6)).toEqual(6);
-    expect(roundCeiling(-5.4)).toEqual(-5);
-    expect(roundCeiling(-5.5)).toEqual(-5);
-    expect(roundCeiling(-5.6)).toEqual(-5);
-    expect(roundCeiling(0.5)).toEqual(1);
-    expect(roundCeiling(5.0)).toEqual(5);
+    expect(roundCeiling(5.4, 0)).toEqual(6);
+    expect(roundCeiling(5.5, 0)).toEqual(6);
+    expect(roundCeiling(5.6, 0)).toEqual(6);
+    expect(roundCeiling(-5.4, 0)).toEqual(-5);
+    expect(roundCeiling(-5.5, 0)).toEqual(-5);
+    expect(roundCeiling(-5.6, 0)).toEqual(-5);
+    expect(roundCeiling(0.5, 0)).toEqual(1);
+    expect(roundCeiling(5.0, 0)).toEqual(5);
   });
 
   it('roundFloor() should round down to the next smallest whole number', () => {

@@ -77,10 +77,10 @@ describe('calculateMonthlyAmortization()', () => {
   it('should return an object with payment, interest and balance info', () => {
     expect(calculateMonthlyAmortization(536.82, .05/12, 0, 100000)).toEqual({
       monthlyPayment   : 536.82,
-      principalPayment : 120.15,
+      principalPayment : 120.16,
       interestPayment  : 416.67,
       totalInterest    : 416.67,
-      loanBalance      : 99879.85
+      loanBalance      : 99879.84
     });
   });
 });
