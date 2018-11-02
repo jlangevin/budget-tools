@@ -16,10 +16,14 @@ const roundHalfUpSymmetric = (value, decimals=0) => {
   return newValue / multiplier;
 };
 
-const roundHalfDownAsymmetric = value => {
-  return value % 0.5 === 0 ?
-         Math.floor(value) : 
-         Math.round(value);
+const roundHalfDownAsymmetric = (value, decimals=0) => {
+  const multiplier = 10**decimals;
+  let newValue = value * multiplier;
+
+  newValue = newValue % 0.5 === 0 ?
+             Math.floor(newValue) : 
+             Math.round(newValue);
+  return newValue / multiplier;
 };
 
 const roundHalfDownSymmetric = value => {

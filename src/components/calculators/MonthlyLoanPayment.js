@@ -226,7 +226,7 @@ class MonthlyLoanPayment extends Component {
             </Col>
           </FormGroup>
           
-          <FormGroup row>
+          {/* <FormGroup row>
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               Monthly Payment:
             </Col>
@@ -240,7 +240,7 @@ class MonthlyLoanPayment extends Component {
                 }
               </b>
             </Col>
-          </FormGroup>
+          </FormGroup> */}
 
           {/*
             this.allowAmortization() ?
@@ -259,12 +259,12 @@ class MonthlyLoanPayment extends Component {
               null
           */}
 
-          <FormGroup row>
+          {/* <FormGroup row>
             <Col xs={ 12 } md={ 8 } lg={ 6 }>
               <b>*</b> Monthly payment does not include taxes, insurance, 
               HOA dues, or other fees commonly associated with loans.
             </Col>
-          </FormGroup>
+          </FormGroup> */}
         </Form>
 
         {

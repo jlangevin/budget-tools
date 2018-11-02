@@ -38,21 +38,21 @@ const LoanChart = ({ data }) => {
         label: 'Balance',
         data: balanceData,
         type: 'line',
-        backgroundColor: 'rgb(78, 32, 189)',
-			  borderColor: 'rgb(78, 32, 189)',
+        backgroundColor: 'rgb(40, 167, 69)',
+			  borderColor: 'rgb(40, 167, 69)',
       },
        {
         label: 'Principal',
         data: principalData,
         type: 'bar', 
-        backgroundColor: 'rgb(255, 99, 77)',
-        borderColor: 'rgb(255, 99, 77)',
+        backgroundColor: 'rgb(0, 99, 132)',
+        borderColor: 'rgb(0, 99, 132)',
       }, {
         label: 'Interest Paid',
         data: interestData,
         type: 'bar', 
-        backgroundColor: 'rgb(0, 99, 132)',
-        borderColor: 'rgb(0, 99, 132)',
+        backgroundColor: 'rgb(255, 99, 77)',
+        borderColor: 'rgb(255, 99, 77)',
       }],
     labels: monthLabels
   };

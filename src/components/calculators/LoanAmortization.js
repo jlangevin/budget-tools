@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table } from 'reactstrap';
+import { Card, CardBody, CardDeck, CardHeader, CardText, Col, Row, Table } from 'reactstrap';
 import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
 
 import LoanChart from './LoanChart';
@@ -10,11 +10,11 @@ const AmortizationItem = ({ index, payment, principalPayment, interestPayment, t
   return (
     <tr>
       <td>{ index+1 }</td>
-      <td>{ formatMoney(payment) }</td>
-      <td>{ formatMoney(principalPayment) }</td>
-      <td>{ formatMoney(interestPayment) }</td>
-      <td>{ formatMoney(totalInterest) }</td>
-      <td>{ formatMoney(loanBalance) }</td>
+      {/* <td>{ formatMoney(payment) }</td> */}
+      <td className="text-right">{ formatMoney(principalPayment) }</td>
+      <td className="text-right">{ formatMoney(interestPayment) }</td>
+      <td className="text-right">{ formatMoney(totalInterest) }</td>
+      <td className="text-right">{ formatMoney(loanBalance) }</td>
     </tr>
   );
 }
@@ -35,12 +35,60 @@ const AmortizationList = ({ data }) => {
     
 const LoanAmortization = ({ rate, duration, principal, payment }) => {
 
-  let rateMonthly = getMonthlyRateFromAPR(rate);
-  let loanTermMonths = numberMonthsInYears(duration); 
-  let amortization = calculateAmortization(payment, loanTermMonths, rateMonthly, principal);
+  const periodicRate = getMonthlyRateFromAPR(rate);
+  const loanTermPeriods = numberMonthsInYears(duration); 
+  const amortization = calculateAmortization(payment, loanTermPeriods, periodicRate, principal);
+  const endData = amortization[amortization.length-1];
+  const today = new Date();
+  const payoffDate = new Date(today.getFullYear()+parseInt(duration,10), today.getMonth(), today.getDate());
   
   return (
     <div>
+
+      <div className={classes.LoanInfoBox} id="LoanInfoBox">
+        <Row>
+          <Col className="text-center">
+            <h6>Payment</h6>
+            <h3><a href="#FeesFootnote" className={classes.TextAnchor}>{formatMoney(payment)}*</a></h3>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            <CardDeck className="text-center">
+              <Card>
+                <CardHeader tag="h5">Total Interest Paid</CardHeader>
+                <CardBody>
+                  <CardText>
+                    {formatMoney(endData.totalInterest)}
+                  </CardText>
+                </CardBody>
+              </Card>
+
+              <Card>
+                <CardHeader tag="h5">Total Paid</CardHeader>
+                <CardBody>
+                  <CardText>
+                    {formatMoney(endData.totalInterest + endData.totalPrincipal)}<br />
+                    (over {loanTermPeriods} payments)
+                  </CardText>
+                </CardBody>
+              </Card>
+
+              <Card>
+                <CardHeader tag="h5">Payoff</CardHeader>
+                <CardBody>
+                  <CardText>
+                    {payoffDate.toLocaleString('en-us', { month: 'long' })} {payoffDate.getFullYear()}
+                  </CardText>
+                </CardBody>
+              </Card>
+            </CardDeck>
+          </Col>
+        </Row>
+      </div>
+
+  
 
       <div className={classes.ChartWrapper}>
         <LoanChart
@@ -48,15 +96,19 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
         />
       </div>
 
-      <Table className="table-striped table-sm {classes.reduce-table-padding}" size="sm">
-        <thead>
+      <Table size="sm" bordered striped responsive>
+        <thead className="text-center">
           <tr>
-            <th>Month</th>
-            <th>Payment</th>
+            <th rowSpan="2">Month</th>
+            <th colSpan="2">Payment</th>
+            {/* <th>Interest</th> */}
+            <th rowSpan="2">Total Interest</th>
+            <th rowSpan="2">Balance</th>
+          </tr>
+          <tr>
+            {/* <th>Payment</th> */}
             <th>Principal</th>
             <th>Interest</th>
-            <th>Total Interest</th>
-            <th>Balance</th>
           </tr>
         </thead>
 
@@ -66,6 +118,13 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
           />
         </tbody>
       </Table>
+
+      <p>
+        <a href="#LoanInfoBox" id="FeesFootnote" className={classes.TextAnchor}>
+          <b>*</b> Monthly payment does not include taxes, insurance, 
+          HOA dues, or other fees commonly associated with loans. 
+        </a>
+      </p>
     </div>
   );
 }
