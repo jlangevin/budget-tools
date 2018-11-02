@@ -1,16 +1,19 @@
 // native rounding
-const roundHalfUpAsymmetric = (value, decimalPlaces) => {
-  const multiplier = 10**decimalPlaces;
+const roundHalfUpAsymmetric = (value, decimals=0) => {
+  const multiplier = 10**decimals;
   return Math.round(value * multiplier) / multiplier;
 }
 
-const roundHalfUpSymmetric = value => {
-  if (value >= 0) {
-    return Math.round(value);
+const roundHalfUpSymmetric = (value, decimals=0) => {
+  const multiplier = 10**decimals;
+  let newValue = value * multiplier;
+  if (newValue >= 0) {
+    return Math.round(newValue) / multiplier;
   }
-  return value % 0.5 === 0 ? 
-         Math.floor(value) : 
-         Math.round(value);
+  newValue = newValue % 0.5 === 0 ? 
+         Math.floor(newValue) : 
+         Math.round(newValue);
+  return newValue / multiplier;
 };
 
 const roundHalfDownAsymmetric = value => {
@@ -30,17 +33,17 @@ const roundHalfDownSymmetric = value => {
 };
 
 // Banker's rounding
-const roundHalfEven = (value, decimals) => {
+const roundHalfEven = (value, decimals=0) => {
   const multiplier = 10**decimals;
-  value = value * multiplier;
-  if (value % 0.5 !== 0) {
-    value = Math.round(value);
+  let newValue = value * multiplier;
+  if (newValue % 0.5 !== 0) {
+    newValue = Math.round(newValue);
   } else {
-    value = Math.floor(value) % 2 === 0 ? 
-            Math.floor(value) : 
-            Math.round(value);
+    newValue = Math.floor(newValue) % 2 === 0 ? 
+            Math.floor(newValue) : 
+            Math.round(newValue);
   }
-  return value / multiplier;
+  return newValue / multiplier;
 };
 
 const roundHalfOdd = value => {
@@ -53,20 +56,22 @@ const roundHalfOdd = value => {
          Math.round(value);
 };
 
-const roundCeiling = (value, decimals) => {
+const roundCeiling = (value, decimals=0) => {
   const multiplier = 10**decimals;
   let newValue = value * multiplier;
   newValue = parseInt(newValue, 10) === newValue ?
-          newValue : 
-          Math.floor(newValue + 1);
-          
+             newValue : 
+             Math.floor(newValue + 1);
   return newValue / multiplier;
 };
 
-const roundFloor = value => {
-  return parseInt(value, 10) === value ? 
-         value : 
-         Math.round(value - 0.5);
+const roundFloor = (value, decimals=0) => {
+  const multiplier = 10**decimals;
+  let newValue = value * multiplier;
+  newValue = parseInt(newValue, 10) === newValue ? 
+             newValue : 
+             Math.round(newValue - 0.5);
+  return newValue / multiplier;
 };
 
 const roundTowardsZero = value => {

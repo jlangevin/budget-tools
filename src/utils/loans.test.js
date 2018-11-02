@@ -91,38 +91,6 @@ describe('calculateInterest()', () => {
   });
 });
 
-describe('roundNum()', () => {
-  it('should return a string rounded to two decimal places', () => {
-    expect(roundNum(1, 2)).toEqual(1.00);
-    expect(roundNum(1.2, 2)).toEqual(1.20);
-    expect(roundNum(1.23, 2)).toEqual(1.23);
-    expect(roundNum(1.234, 2)).toEqual(1.23);
-    expect(roundNum(1.235, 2)).toEqual(1.24);
-    expect(roundNum(1.4, 0)).toEqual(1);
-    expect(roundNum(1.5, 0)).toEqual(2);
-    expect(roundNum(1.14, 1)).toEqual(1.1);
-    expect(roundNum(1.15, 1)).toEqual(1.2);
-  });
-});
-
-describe('roundUp()', () => {
-  it('should return a string rounded down to the specified number of decimal places', () => {
-    expect(roundUp(1.234, 2)).toEqual(1.24);
-    expect(roundUp(1.235, 2)).toEqual(1.24);
-    expect(roundUp(1.2344, 3)).toEqual(1.235);
-    expect(roundUp(1.2355, 3)).toEqual(1.236);
-  });
-});
-
-describe('roundDown()', () => {
-  it('should return a string rounded down to the specified number of decimal places', () => {
-    expect(roundDown(1.234, 2)).toEqual(1.23);
-    expect(roundDown(1.235, 2)).toEqual(1.23);
-    expect(roundDown(1.2344, 3)).toEqual(1.234);
-    expect(roundDown(1.2355, 3)).toEqual(1.235);
-  });
-});
-
 // describe('calculateAmortization()', () => {
 
 // });
