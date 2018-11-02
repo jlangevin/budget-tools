@@ -27,13 +27,17 @@ const roundHalfDownSymmetric = value => {
 };
 
 // Banker's rounding
-const roundHalfEven = value => {
+const roundHalfEven = (value, decimals) => {
+  const multiplier = 10**decimals;
+  value = value * multiplier;
   if (value % 0.5 !== 0) {
-    return Math.round(value);
+    value = Math.round(value);
+  } else {
+   value = Math.floor(value) % 2 === 0 ? 
+           Math.floor(value) : 
+           Math.round(value);
   }
-  return Math.floor(value) % 2 === 0 ? 
-         Math.floor(value) : 
-         Math.round(value);
+  return value / multiplier;
 };
 
 const roundHalfOdd = value => {
@@ -46,10 +50,13 @@ const roundHalfOdd = value => {
          Math.round(value);
 };
 
-const roundCeiling = (value) => {
-  return parseInt(value, 10) === value ?
-         value : 
-         Math.floor(value + 1);
+const roundCeiling = (value, decimals) => {
+  const multiplier = 10**decimals;
+  value = value * multiplier;
+  value = parseInt(value, 10) === value ?
+          value : 
+          Math.floor(value + 1);
+  return value / multiplier;
 };
 
 const roundFloor = value => {

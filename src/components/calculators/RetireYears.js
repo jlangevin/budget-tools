@@ -8,7 +8,7 @@ class YearsToRetirement extends Component {
 
     return (
       <div>
-        <h4>
+        <h4 className='header'>
           Years to Retirement
         </h4>
 

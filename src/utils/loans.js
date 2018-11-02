@@ -1,3 +1,5 @@
+import { roundCeiling } from './roundNums';
+
 const formatMoney = (number) => {
   return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 }
@@ -24,7 +26,7 @@ const roundDown = (num, decimalPlaces) => {
 }
 
 const calculateInterest = (rate, principal) => {
-  return roundNum(principal * rate, 2);
+  return principal * rate;
 }
 
 const numberMonthsInYears = (years) => {
@@ -67,10 +69,16 @@ const calculateMonthlyPayment = (rate, duration, principal) => {
 
 const calculateMonthlyAmortization = (monthlyPayment, monthlyInterestRate, totalInterest, loanBalance) => {
 
-  let interestPayment  = calculateInterest(monthlyInterestRate, loanBalance);
-  let principalPayment = roundNum(monthlyPayment - interestPayment, 2);
-  let newLoanBalance   = roundNum(loanBalance - principalPayment, 2);
+  let interestPayment  = roundNum(calculateInterest(monthlyInterestRate, loanBalance), 2);
   let newTotalInterest = roundNum(interestPayment + totalInterest, 2);
+  let principalPayment = roundCeiling(monthlyPayment - interestPayment, 2);
+  let newLoanBalance   = loanBalance - principalPayment;
+  
+  if ( newLoanBalance < 0 ) {
+    principalPayment = principalPayment + newLoanBalance;
+    newLoanBalance = 0;
+  }
+  
   let amortData = {
     monthlyPayment,
     principalPayment,
@@ -108,6 +116,7 @@ export {
   getValidDecimal,
   numberMonthsInYears,
   roundDown,
+  // roundHalfToEven,
   roundNum,
   roundUp
 };

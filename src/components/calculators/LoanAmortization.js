@@ -1,12 +1,14 @@
 import React from 'react';
-import { Button, Modal, ModalBody, ModalFooter, ModalHeader, Table } from 'reactstrap';
+import { Table } from 'reactstrap';
 import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
+import { Bar as BarChart } from 'react-chartjs-2';
+import * as classes from './LoanAmortization.css';
 
-const AmortizationItem = ({ index, monthlyPayment, principalPayment, interestPayment, totalInterest, loanBalance }) => {
+
+const AmortizationItem = ({ index, principalPayment, interestPayment, totalInterest, loanBalance }) => {
   return (
     <tr>
-      <th scope="row">{ index+1 }</th>
-      <td>{ formatMoney(monthlyPayment) }</td>
+      <td>{ index+1 }</td>
       <td>{ formatMoney(principalPayment) }</td>
       <td>{ formatMoney(interestPayment) }</td>
       <td>{ formatMoney(totalInterest) }</td>
@@ -29,54 +31,64 @@ const AmortizationList = ({ data }) => {
   ));
 }
 
-const LoanAmortization = ({ rate, duration, principal, payment, closeHandler, isOpen }) => {
+
+const chartData = {
+  datasets: [
+    {
+      label: 'Bar Dataset',
+      data: [10, 20, 30, 40]
+    },
+    {
+      label: 'Line Dataset',
+      data: [50, 50, 50, 50],
+      // Changes this dataset to become a line
+      type: 'line'
+    }
+  ],
+  labels: ['January', 'February', 'March', 'April']
+};
+
+const chartOptions = {
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
+};
+    
+const LoanAmortization = ({ rate, duration, principal, payment }) => {
 
   let rateMonthly = getMonthlyRateFromAPR(rate);
   let loanTermMonths = numberMonthsInYears(duration); 
   let amortization = calculateAmortization(payment, loanTermMonths, rateMonthly, principal);
   
   return (
-    <Modal
-      isOpen = { isOpen }
-      toggle = { closeHandler }
-      size   = 'lg'
-    >
-      <ModalHeader
-        toggle = { closeHandler }
-      >
-        Amortization Schedule
-      </ModalHeader>
+    <div>
+      <BarChart
+        data={chartData}
+        options={chartOptions}
+      />
 
-      <ModalBody>
-        <Table>
-          <thead>
-            <tr>
-              <th>Payment #</th>
-              <th>Payment</th>
-              <th>Principal</th>
-              <th>Interest</th>
-              <th>Total Interest</th>
-              <th>Balance</th>
-            </tr>
-          </thead>
-          
-          <tbody>
-            <AmortizationList
-              data = { amortization }
-            />
-          </tbody>
-        </Table>
-      </ModalBody>
+      <Table className="table-striped table-sm {classes.reduce-table-padding}">
+        <thead>
+          <tr>
+            <th>Payment</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Total Interest</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
 
-      <ModalFooter>
-        <Button
-          color   = "secondary"
-          onClick = { closeHandler }
-        >
-          Close
-        </Button>
-      </ModalFooter>
-    </Modal>
+        <tbody>
+          <AmortizationList
+            data={amortization}
+          />
+        </tbody>
+      </Table>
+    </div>
   );
 }
 
