@@ -1,7 +1,8 @@
 import React from 'react';
 import { Table } from 'reactstrap';
 import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
-import { Bar as BarChart } from 'react-chartjs-2';
+
+import LoanChart from './LoanChart';
 import * as classes from './LoanAmortization.css';
 
 
@@ -30,33 +31,6 @@ const AmortizationList = ({ data }) => {
       />
   ));
 }
-
-
-const chartData = {
-  datasets: [
-    {
-      label: 'Bar Dataset',
-      data: [10, 20, 30, 40]
-    },
-    {
-      label: 'Line Dataset',
-      data: [50, 50, 50, 50],
-      // Changes this dataset to become a line
-      type: 'line'
-    }
-  ],
-  labels: ['January', 'February', 'March', 'April']
-};
-
-const chartOptions = {
-    scales: {
-        yAxes: [{
-            ticks: {
-                beginAtZero: true
-            }
-        }]
-    }
-};
     
 const LoanAmortization = ({ rate, duration, principal, payment }) => {
 
@@ -66,9 +40,8 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
   
   return (
     <div>
-      <BarChart
-        data={chartData}
-        options={chartOptions}
+      <LoanChart
+        data={amortization}
       />
 
       <Table className="table-striped table-sm {classes.reduce-table-padding}">
