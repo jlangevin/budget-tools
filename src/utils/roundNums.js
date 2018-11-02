@@ -1,5 +1,8 @@
 // native rounding
-const roundHalfUpAsymmetric = value => Math.round(value);
+const roundHalfUpAsymmetric = (value, decimalPlaces) => {
+  const multiplier = 10**decimalPlaces;
+  return Math.round(value * multiplier) / multiplier;
+}
 
 const roundHalfUpSymmetric = value => {
   if (value >= 0) {
@@ -52,11 +55,12 @@ const roundHalfOdd = value => {
 
 const roundCeiling = (value, decimals) => {
   const multiplier = 10**decimals;
-  value = value * multiplier;
-  value = parseInt(value, 10) === value ?
-          value : 
-          Math.floor(value + 1);
-  return value / multiplier;
+  let newValue = value * multiplier;
+  newValue = parseInt(newValue, 10) === newValue ?
+          newValue : 
+          Math.floor(newValue + 1);
+          
+  return newValue / multiplier;
 };
 
 const roundFloor = value => {

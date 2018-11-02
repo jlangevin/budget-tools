@@ -1,0 +1,9 @@
+
+.ChartWrapper {
+  margin: 0px 0px 20px 0px;
+}
+
+.reduce-table-padding td,
+.reduce-table-padding th {
+   padding: 5px;
+}

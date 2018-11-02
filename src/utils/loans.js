@@ -1,7 +1,8 @@
-import { roundCeiling } from './roundNums';
+import { roundCeiling, roundHalfUpAsymmetric } from './roundNums';
 
-const formatMoney = (number) => {
-  return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+const formatMoney = (number, includeDecinal=true) => {
+  let value = number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  return includeDecinal ? value : value.split('.')[0];
 }
 
 const getValidDecimal = (value, wholePlaces = 2, decimalPlaces = 2) => {
@@ -9,21 +10,6 @@ const getValidDecimal = (value, wholePlaces = 2, decimalPlaces = 2) => {
   let match = value.match(regex);
   return match.length ? match[0] : null;
 };
-
-const roundNum = (num, decimalPlaces) => {
-  const multiplier = 10**decimalPlaces;
-  return Math.round(num * multiplier) / multiplier;
-}
-
-const roundUp = (num, decimalPlaces) => {
-  const multiplier = 10**(decimalPlaces);
-  return Math.ceil(num * multiplier) / multiplier;
-}
-
-const roundDown = (num, decimalPlaces) => {
-  const multiplier = 10**decimalPlaces;
-  return Math.floor(num * multiplier) / multiplier;
-}
 
 const calculateInterest = (rate, principal) => {
   return principal * rate;
@@ -62,45 +48,45 @@ const getMonthlyRateFromAPR = (ratePerYear) => {
 const calculateMonthlyPayment = (rate, duration, principal) => {
   let monthlyRate     = getMonthlyRateFromAPR(rate);
   let numberOfPeriods = numberMonthsInYears(duration);
-  let factor          = roundNum( (1 + monthlyRate)**numberOfPeriods, 4 );
+  let factor          = roundHalfUpAsymmetric( (1 + monthlyRate)**numberOfPeriods, 4 );
   let payment         = principal * ( ( (monthlyRate * factor) / (factor - 1) ) );
   return Math.round(payment * 100) / 100;
 }
 
-const calculateMonthlyAmortization = (monthlyPayment, monthlyInterestRate, totalInterest, loanBalance) => {
-
-  let interestPayment  = roundNum(calculateInterest(monthlyInterestRate, loanBalance), 2);
-  let newTotalInterest = roundNum(interestPayment + totalInterest, 2);
-  let principalPayment = roundCeiling(monthlyPayment - interestPayment, 2);
+const calculateMonthlyAmortization = (payment, periodicInterestRate, totalInterest, totalPrincipal, loanBalance) => {
+  let interestPayment  = roundHalfUpAsymmetric(calculateInterest(periodicInterestRate, loanBalance), 2);
+  let newTotalInterest = interestPayment + totalInterest;
+  let principalPayment = roundCeiling(payment - interestPayment, 2);
+  let newTotalPrincipal = principalPayment + totalPrincipal;
   let newLoanBalance   = loanBalance - principalPayment;
+
   
   if ( newLoanBalance < 0 ) {
     principalPayment = principalPayment + newLoanBalance;
+    newTotalPrincipal = principalPayment + totalPrincipal;
+    payment = principalPayment + interestPayment;
     newLoanBalance = 0;
   }
   
   let amortData = {
-    monthlyPayment,
+    payment,
     principalPayment,
     interestPayment,
     totalInterest: newTotalInterest,
+    totalPrincipal: newTotalPrincipal,
     loanBalance: newLoanBalance
   };
   return amortData;
 }
 
-
-const calculateAmortization = (monthlyPayment, months, monthlyInterestRate, loanBalance, totalInterest = 0, amortArray = []) => {
-
-  let amortData = calculateMonthlyAmortization(monthlyPayment, monthlyInterestRate, totalInterest, loanBalance);
+const calculateAmortization = (payment, periods, periodicInterestRate, loanBalance, totalInterest = 0, totalPrincipal = 0, amortArray = []) => {
   
-  let newAmortArray = [
-    ...amortArray,
-    amortData
-  ];
+  let amortData = calculateMonthlyAmortization(payment, periodicInterestRate, totalInterest, totalPrincipal, loanBalance);
+ 
+  amortArray.push(amortData);
 
-  if (amortArray.length < months) {
-    return calculateAmortization(monthlyPayment, months, monthlyInterestRate, amortData.loanBalance, amortData.totalInterest, newAmortArray);
+  if (amortArray.length < periods && amortData.loanBalance > 0) {
+    return calculateAmortization(payment, periods, periodicInterestRate, amortData.loanBalance, amortData.totalInterest, amortData.totalPrincipal, amortArray);
   } else {
     return amortArray;
   }
@@ -115,9 +101,9 @@ export {
   getMonthlyRateFromAPR,
   getValidDecimal,
   numberMonthsInYears,
-  roundDown,
+  // roundDown,
   // roundHalfToEven,
-  roundNum,
-  roundUp
+  // roundNum,
+  // roundUp
 };
 

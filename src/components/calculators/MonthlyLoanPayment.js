@@ -4,7 +4,6 @@ import SelectOptions from '../../SelectOptions';
 import { 
   Button,
   Col,
-  Container,
   Form,
   FormFeedback,
   FormGroup,
@@ -36,7 +35,7 @@ class MonthlyLoanPayment extends Component {
     principalError   : false,
 
     payment          : null,
-    amortizationOpen : false
+    amortizationOpen : true
   };
 
   componentDidMount() {
@@ -129,7 +128,7 @@ class MonthlyLoanPayment extends Component {
     } = this.state;
 
     return (
-      <Container>
+      <div>
         <h4>Loan Payment Calculator</h4>
 
         <Form>
@@ -231,7 +230,7 @@ class MonthlyLoanPayment extends Component {
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               Monthly Payment:
             </Col>
-            
+
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               <b>
                 {
@@ -240,19 +239,25 @@ class MonthlyLoanPayment extends Component {
                   null
                 }
               </b>
-
-              {
-                this.allowAmortization() ?
-                <Button
-                  block={ false }
-                  onClick={ () => this.toggleOpen('amortizationOpen') }
-                >
-                  View Amortization
-                </Button> :
-                null
-              }
             </Col>
           </FormGroup>
+
+          {/*
+            this.allowAmortization() ?
+              <FormGroup row>
+                <Col
+                  xs={12} sm={12} md={8} lg={6}
+                  className="text-center">
+                  <Button
+                    block={false}
+                    onClick={() => this.toggleOpen('amortizationOpen')}
+                  >
+                    View Amortization
+                </Button>
+                </Col>
+              </FormGroup> :
+              null
+          */}
 
           <FormGroup row>
             <Col xs={ 12 } md={ 8 } lg={ 6 }>
@@ -277,7 +282,7 @@ class MonthlyLoanPayment extends Component {
           /> :
           null
         }
-      </Container>
+      </div>
     );
   }
 };

@@ -3,13 +3,14 @@ import { Table } from 'reactstrap';
 import { calculateAmortization, formatMoney, getMonthlyRateFromAPR, numberMonthsInYears } from '../../utils/loans';
 
 import LoanChart from './LoanChart';
-import * as classes from './LoanAmortization.css';
+import * as classes from './LoanAmortization.module.css';
 
 
-const AmortizationItem = ({ index, principalPayment, interestPayment, totalInterest, loanBalance }) => {
+const AmortizationItem = ({ index, payment, principalPayment, interestPayment, totalInterest, loanBalance }) => {
   return (
     <tr>
       <td>{ index+1 }</td>
+      <td>{ formatMoney(payment) }</td>
       <td>{ formatMoney(principalPayment) }</td>
       <td>{ formatMoney(interestPayment) }</td>
       <td>{ formatMoney(totalInterest) }</td>
@@ -19,15 +20,15 @@ const AmortizationItem = ({ index, principalPayment, interestPayment, totalInter
 }
 
 const AmortizationList = ({ data }) => {
-  return data.map((monthData, index) => (
+  return data.map((periodicData, index) => (
       <AmortizationItem
-        key={ `mo${index+1}`}
+        key              = { `period${index+1}`}
         index            = { index }
-        monthlyPayment   = { monthData.monthlyPayment }
-        principalPayment = { monthData.principalPayment }
-        interestPayment  = { monthData.interestPayment }
-        totalInterest    = { monthData.totalInterest }
-        loanBalance      = { monthData.loanBalance }
+        payment          = { periodicData.payment }
+        principalPayment = { periodicData.principalPayment }
+        interestPayment  = { periodicData.interestPayment }
+        totalInterest    = { periodicData.totalInterest }
+        loanBalance      = { periodicData.loanBalance }
       />
   ));
 }
@@ -40,13 +41,17 @@ const LoanAmortization = ({ rate, duration, principal, payment }) => {
   
   return (
     <div>
-      <LoanChart
-        data={amortization}
-      />
 
-      <Table className="table-striped table-sm {classes.reduce-table-padding}">
+      <div className={classes.ChartWrapper}>
+        <LoanChart
+          data={amortization}
+        />
+      </div>
+
+      <Table className="table-striped table-sm {classes.reduce-table-padding}" size="sm">
         <thead>
           <tr>
+            <th>Month</th>
             <th>Payment</th>
             <th>Principal</th>
             <th>Interest</th>

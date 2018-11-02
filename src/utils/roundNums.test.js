@@ -96,6 +96,14 @@ describe('rounding functions', () => {
     expect(roundCeiling(-5.6, 0)).toEqual(-5);
     expect(roundCeiling(0.5, 0)).toEqual(1);
     expect(roundCeiling(5.0, 0)).toEqual(5);
+    expect(roundCeiling(5.554, 2)).toEqual(5.56);
+    expect(roundCeiling(5.555, 2)).toEqual(5.56);
+    expect(roundCeiling(5.556, 2)).toEqual(5.56);
+    expect(roundCeiling(-5.554, 2)).toEqual(-5.55);
+    expect(roundCeiling(-5.555, 2)).toEqual(-5.55);
+    expect(roundCeiling(-5.556, 2)).toEqual(-5.55);
+    expect(roundCeiling(0.555, 2)).toEqual(.56);
+    expect(roundCeiling(5.550, 2)).toEqual(5.55);
   });
 
   it('roundFloor() should round down to the next smallest whole number', () => {
