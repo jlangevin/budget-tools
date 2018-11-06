@@ -34,8 +34,7 @@ class MonthlyLoanPayment extends Component {
     principalTipOpen : false,
     principalError   : false,
 
-    payment          : null,
-    amortizationOpen : true
+    payment          : null
   };
 
   componentDidMount() {
@@ -132,7 +131,6 @@ class MonthlyLoanPayment extends Component {
         <h4>Loan Payment Calculator</h4>
 
         <Form>
-
           <FormGroup row>
             <Label for='rate' id='principalLabel' xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
               Loan Amount:
@@ -147,14 +145,19 @@ class MonthlyLoanPayment extends Component {
             </Tooltip>
 
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
-              <Input
-                type     = 'text'
-                name     = 'principal'
-                id       = 'principal'
-                value    = { principal }
-                onChange = { this.handleFieldChange }
-                invalid  = { principalError }
-              />
+              <div class="input-group">          
+                <div class="input-group-prepend">
+                  <div class="input-group-text">$</div>
+                </div>
+                <Input
+                  type     = 'text'
+                  name     = 'principal'
+                  id       = 'principal'
+                  value    = { principal }
+                  onChange = { this.handleFieldChange }
+                  invalid  = { principalError }
+                />
+              </div>
               <FormFeedback>Principal is required</FormFeedback>
             </Col>            
           </FormGroup>
@@ -201,14 +204,19 @@ class MonthlyLoanPayment extends Component {
             </Tooltip>
             
             <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
-              <Input
-                type     = 'text'
-                name     = 'rate'
-                id       = 'rate'
-                value    = { rate }
-                onChange = { this.handleFieldChange }
-                invalid  = { rateError }
-              />
+              <div class="input-group">
+                <Input
+                  type     = 'text'
+                  name     = 'rate'
+                  id       = 'rate'
+                  value    = { rate }
+                  onChange = { this.handleFieldChange }
+                  invalid  = { rateError }
+                />
+                <div class="input-group-append">
+                  <div class="input-group-text">%</div>
+                </div>
+              </div>
               <FormFeedback>Rate is required</FormFeedback>
             </Col>
           </FormGroup>
@@ -225,53 +233,10 @@ class MonthlyLoanPayment extends Component {
               </Button>
             </Col>
           </FormGroup>
-          
-          {/* <FormGroup row>
-            <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
-              Monthly Payment:
-            </Col>
-
-            <Col xs={ 12 } sm={ 6 } md={ 4 } lg={ 3 }>
-              <b>
-                {
-                  payment !== null ? 
-                  `$${payment}* ` :
-                  null
-                }
-              </b>
-            </Col>
-          </FormGroup> */}
-
-          {/*
-            this.allowAmortization() ?
-              <FormGroup row>
-                <Col
-                  xs={12} sm={12} md={8} lg={6}
-                  className="text-center">
-                  <Button
-                    block={false}
-                    onClick={() => this.toggleOpen('amortizationOpen')}
-                  >
-                    View Amortization
-                </Button>
-                </Col>
-              </FormGroup> :
-              null
-          */}
-
-          {/* <FormGroup row>
-            <Col xs={ 12 } md={ 8 } lg={ 6 }>
-              <b>*</b> Monthly payment does not include taxes, insurance, 
-              HOA dues, or other fees commonly associated with loans.
-            </Col>
-          </FormGroup> */}
         </Form>
 
         {
-          (
-            amortizationOpen &&
-            this.allowAmortization()
-          ) ?
+          this.allowAmortization() ?
           <LoanAmortization
             rate         = { rate }
             duration     = { duration }
