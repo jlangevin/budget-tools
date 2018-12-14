@@ -1,16 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, compose } from 'redux';
+// Redux thunk allows us to dispatch actions and receive a promise instead of an object
+import reduxThunk from 'redux-thunk';
+
+import * as serviceWorker from './serviceWorker';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+
 import App from './App';
+import reducers from './reducers';
+
+// Config for redux dev tools
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore( 
+	reducers, 
+	// Second parameter is an "enhancer".  Middlewares can be passed as a comma list
+	composeEnhancers( applyMiddleware( reduxThunk ) ) // Invoke middleware as it's passed in
+);
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>,
   document.getElementById('root')
 );
 
